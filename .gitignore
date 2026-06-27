@@ -1,0 +1,27 @@
+.gradle/
+.idea/
+.vscode/
+
+# Local build outputs
+build/
+**/build/
+out/
+
+# Local test and compatibility workdirs
+work/
+
+# Release binaries and downloaded jars
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# Compiled classes and temp files
+*.class
+*.log
+*.tmp
+*.bak
+error.txt
+
+# OS files
+.DS_Store
+Thumbs.db

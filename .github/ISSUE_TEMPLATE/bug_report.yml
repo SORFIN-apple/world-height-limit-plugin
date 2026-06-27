@@ -1,0 +1,55 @@
+name: Bug report
+description: Report a problem with the plugin
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the bug and what you expected instead.
+    validations:
+      required: true
+
+  - type: input
+    id: mc_version
+    attributes:
+      label: Minecraft / Paper version
+      placeholder: "Example: Paper 1.21.11 build 35"
+    validations:
+      required: true
+
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Plugin version
+      placeholder: "Example: 1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant config
+      description: Paste only the parts related to the issue.
+      render: yaml
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or stacktrace
+      description: Paste console output or errors if available.
+      render: text
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Write the exact steps that trigger the bug.
+      placeholder: |
+        1. Start the server
+        2. Run ...
+        3. Place a block at ...
+    validations:
+      required: true

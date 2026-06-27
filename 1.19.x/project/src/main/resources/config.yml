@@ -1,0 +1,76 @@
+# IMPORTANT:
+# 1. Make a backup before enabling this plugin on an existing world.
+# 2. The plugin writes a datapack into each loaded world save folder.
+# 3. A full server restart is required after datapack height changes.
+# 4. /highbuildlimit reload updates restrictions and messages immediately, but world height still needs a full restart.
+
+target-max-y: 2031
+
+# These permission nodes can be changed if you want to integrate with a permission plugin.
+bypass-permission: highbuildlimit.bypass
+reload-permission: highbuildlimit.reload
+status-permission: highbuildlimit.status
+fill-permission: highbuildlimit.fill
+
+messages:
+  denied-build: "<red>Only admins can build above the normal height limit."
+  denied-break: "<red>Only admins can break blocks above the normal height limit."
+  no-permission: "<red>You do not have permission to use this command."
+  reload-success: "<green>HighBuildLimit config reloaded."
+  reload-no-datapack-changes: "<yellow>Player restrictions were updated. World height changes still need a full restart."
+  restart-required: "<yellow>Datapack files changed. Fully restart the server to apply world height changes."
+  fill-success: "<green>Filled <white><count></white> blocks."
+  platform-success: "<green>Platform created with <white><count></white> blocks."
+  fill-too-large: "<red>That area is too large. Limit: <white><limit></white> blocks."
+  invalid-block: "<red>Unknown or unsupported block: <white><input></white>"
+  players-only: "<red>This command can only be used by a player."
+  invalid-number: "<red>Invalid number: <white><input></white>"
+
+  # OFF, CHAT, ACTION_BAR, TITLE, BOTH
+  notification-mode: CHAT
+  notification-cooldown-millis: 1500
+
+admin-tools:
+  max-fill-blocks: 200000
+
+logging:
+  suppress-heightmap-warnings: true
+
+build-restrictions:
+  overworld:
+    enabled: true
+    vanilla-max-y: 319
+    block-place: true
+    block-break: true
+    buckets: true
+
+  nether:
+    enabled: true
+    vanilla-max-y: 255
+    block-place: true
+    block-break: true
+    buckets: true
+
+  end:
+    enabled: true
+    vanilla-max-y: 255
+    block-place: true
+    block-break: true
+    buckets: true
+
+dimensions:
+  overworld:
+    enabled: true
+    min-y: -64
+    logical-height: 2096
+    cloud-height: 192.33
+
+  nether:
+    enabled: true
+    min-y: 0
+    logical-height: 2032
+
+  end:
+    enabled: true
+    min-y: 0
+    logical-height: 2032

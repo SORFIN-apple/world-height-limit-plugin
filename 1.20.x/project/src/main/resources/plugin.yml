@@ -1,0 +1,23 @@
+name: WorldHeightLimit
+version: ${version}
+main: ru.ivan.codex.highbuildlimit.HighBuildLimitPlugin
+api-version: '1.20'
+description: Raises the world height limit on Paper 1.20.5-1.20.6 with configurable admin-only access.
+author: Codex
+commands:
+  highbuildlimit:
+    description: Admin command for World Height Limit.
+    usage: /<command> <reload|status|fill|platform|help>
+permissions:
+  highbuildlimit.bypass:
+    description: Allows building above the normal vanilla height limit.
+    default: op
+  highbuildlimit.reload:
+    description: Allows reloading HighBuildLimit config.
+    default: op
+  highbuildlimit.status:
+    description: Allows viewing HighBuildLimit status.
+    default: op
+  highbuildlimit.fill:
+    description: Allows using HighBuildLimit fill and platform commands.
+    default: op
