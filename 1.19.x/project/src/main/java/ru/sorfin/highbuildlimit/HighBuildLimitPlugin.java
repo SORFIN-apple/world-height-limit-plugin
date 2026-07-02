@@ -1,4 +1,4 @@
-package ru.ivan.codex.highbuildlimit;
+package ru.sorfin.highbuildlimit;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;

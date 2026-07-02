@@ -2,7 +2,7 @@ plugins {
     java
 }
 
-group = "ru.ivan.codex"
+group = "ru.sorfin"
 version = "1.0.0"
 
 repositories {

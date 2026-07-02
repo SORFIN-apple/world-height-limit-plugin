@@ -1,4 +1,4 @@
-package ru.ivan.codex.highbuildlimit;
+package ru.sorfin.highbuildlimit;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -57,7 +57,7 @@ public final class HighBuildLimitPlugin extends JavaPlugin implements Listener {
         String serverVersion = resolveMinecraftVersion();
         CompatibilityProfile compatibilityProfile = CompatibilityProfile.detect(serverVersion);
         if (compatibilityProfile == null) {
-            getLogger().severe("Unsupported Minecraft version: " + serverVersion + ". Supported versions: 1.20.5 through 1.20.6.");
+            getLogger().severe("Unsupported Minecraft version: " + serverVersion + ". Supported versions: 1.20.0 through 1.20.4.");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -804,7 +804,8 @@ public final class HighBuildLimitPlugin extends JavaPlugin implements Listener {
     }
 
     private enum CompatibilityProfile {
-        V1_20_5_TO_1_20_6("1.20.5-1.20.6", McVersion.parse("1.20.5"), McVersion.parse("1.20.6"), 41, false, false);
+        V1_20_TO_1_20_1("1.20-1.20.1", McVersion.parse("1.20.0"), McVersion.parse("1.20.1"), 15, false, false),
+        V1_20_2_TO_1_20_4("1.20.2-1.20.4", McVersion.parse("1.20.2"), McVersion.parse("1.20.4"), 26, false, false);
 
         private final String displayName;
         private final McVersion minVersion;
@@ -867,8 +868,10 @@ public final class HighBuildLimitPlugin extends JavaPlugin implements Listener {
                   "monster_spawn_block_light_limit": 0,
                   "monster_spawn_light_level": {
                     "type": "minecraft:uniform",
-                    "max_inclusive": 7,
-                    "min_inclusive": 0
+                    "value": {
+                      "max_inclusive": 7,
+                      "min_inclusive": 0
+                    }
                   },
                   "natural": true,
                   "piglin_safe": false,
@@ -921,8 +924,10 @@ public final class HighBuildLimitPlugin extends JavaPlugin implements Listener {
                   "monster_spawn_block_light_limit": 0,
                   "monster_spawn_light_level": {
                     "type": "minecraft:uniform",
-                    "max_inclusive": 7,
-                    "min_inclusive": 0
+                    "value": {
+                      "max_inclusive": 7,
+                      "min_inclusive": 0
+                    }
                   },
                   "natural": false,
                   "piglin_safe": false,
