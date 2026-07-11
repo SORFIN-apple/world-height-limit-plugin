@@ -8,17 +8,17 @@ Version folders are organized by Minecraft version family.
   Reserved for future builds.
 
 - `1.19.x`
-  Reserved for future builds.
+  Supports Paper `1.19` through `1.19.4`.
 
 - `1.20.x`
-  Currently meant only for `1.20.5-1.20.6`. Earlier `1.20.x` versions are not supported in this branch.
+  Supports Paper `1.20.5` through `1.20.6`.
 
 - `1.20.0-1.20.4`
-  Separate testing branch for earlier `1.20.x` releases with older datapack schemas.
+  Supports Paper `1.20` through `1.20.4` with the older datapack schemas.
 
 - `1.21.x`
-  Main active branch. Contains both the stable `1.21.11` build and broader experimental builds.
+  Main active branch for Paper `1.21` through `1.21.11`.
 
 ## Recommendation
 
-If you want the safest build right now, use the stable `1.21.11` release inside `1.21.x`.
+Use the release file matching your Minecraft version family.

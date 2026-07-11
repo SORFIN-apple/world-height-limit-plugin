@@ -1,11 +1,11 @@
 name: WorldHeightLimit
 version: ${version}
-main: ru.sorfin.highbuildlimit.HighBuildLimitPlugin
+main: ru.sorfin.worldheightlimit.WorldHeightLimitPlugin
 api-version: '1.20'
 description: Raises the world height limit on Paper 1.20.0-1.20.4 with configurable admin-only access.
 author: SORFIN
 commands:
-  highbuildlimit:
+  worldheightlimit:
     description: Admin command for World Height Limit.
     usage: /<command> <reload|status|fill|platform|help>
 permissions:
@@ -13,11 +13,11 @@ permissions:
     description: Allows building above the normal vanilla height limit.
     default: op
   highbuildlimit.reload:
-    description: Allows reloading HighBuildLimit config.
+    description: Allows reloading WorldHeightLimit config.
     default: op
   highbuildlimit.status:
-    description: Allows viewing HighBuildLimit status.
+    description: Allows viewing WorldHeightLimit status.
     default: op
   highbuildlimit.fill:
-    description: Allows using HighBuildLimit fill and platform commands.
+    description: Allows using WorldHeightLimit fill and platform commands.
     default: op

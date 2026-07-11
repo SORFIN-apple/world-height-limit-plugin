@@ -7,7 +7,7 @@ Public source repository for a Paper plugin that removes the default top build l
 - Raises the top build height to `Y=2031` by default
 - Generates datapack files in `world/datapacks/high-build-limit-generated`
 - Lets only players with a bypass permission build above the normal vanilla limit
-- Includes `/highbuildlimit reload`, `/highbuildlimit status`, `/highbuildlimit fill`, and `/highbuildlimit platform`
+- Includes `/worldheightlimit reload`, `/worldheightlimit status`, `/worldheightlimit fill`, and `/worldheightlimit platform`
 - Detects the server version and writes the correct datapack format for that version
 - Requires a full server restart after the first launch or after datapack height changes
 
@@ -20,10 +20,10 @@ Public source repository for a Paper plugin that removes the default top build l
 
 ## Commands and permissions
 
-- `/highbuildlimit reload` -> `highbuildlimit.reload`
-- `/highbuildlimit status` -> `highbuildlimit.status`
-- `/highbuildlimit fill` -> `highbuildlimit.fill`
-- `/highbuildlimit platform` -> `highbuildlimit.fill`
+- `/worldheightlimit reload` -> `highbuildlimit.reload`
+- `/worldheightlimit status` -> `highbuildlimit.status`
+- `/worldheightlimit fill` -> `highbuildlimit.fill`
+- `/worldheightlimit platform` -> `highbuildlimit.fill`
 - Build above vanilla height -> `highbuildlimit.bypass`
 
 ## Configurable behavior

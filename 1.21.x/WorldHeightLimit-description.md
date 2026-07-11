@@ -30,9 +30,9 @@ It is made for servers that want extra vertical build space without giving that 
 
 ## Commands
 
-- `/highbuildlimit help`
-- `/highbuildlimit reload`
-- `/highbuildlimit status`
+- `/worldheightlimit help`
+- `/worldheightlimit reload`
+- `/worldheightlimit status`
 
 ## Permissions
 

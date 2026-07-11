@@ -1,4 +1,5 @@
 .gradle/
+.gradle-public-check/
 .idea/
 .vscode/
 
@@ -9,6 +10,9 @@ out/
 
 # Local test and compatibility workdirs
 work/
+outputs/
+release-*/
+release-ready-*/
 
 # Release binaries and downloaded jars
 *.jar
