@@ -1,0 +1,19 @@
+{
+  "targetMaxY": 2031,
+  "overworld": {
+    "enabled": true,
+    "minY": -64,
+    "logicalHeight": 2096,
+    "cloudHeight": 192.33
+  },
+  "nether": {
+    "enabled": true,
+    "minY": 0,
+    "logicalHeight": 2032
+  },
+  "end": {
+    "enabled": true,
+    "minY": 0,
+    "logicalHeight": 2032
+  }
+}

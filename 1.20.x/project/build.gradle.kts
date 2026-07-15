@@ -7,11 +7,11 @@ version = "1.0.1"
 
 repositories {
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -24,4 +24,19 @@ tasks.processResources {
     filesMatching("plugin.yml") {
         expand("version" to project.version)
     }
+}
+
+tasks.jar {
+    archiveFileName.set("WorldHeightLimit-v${project.version}-Paper-Purpur-Folia-1.20.5-1.20.6.jar")
+}
+
+tasks.register<Copy>("copySpigotBukkitJar") {
+    dependsOn(tasks.jar)
+    from(tasks.jar.flatMap { it.archiveFile })
+    into(layout.buildDirectory.dir("libs"))
+    rename { "WorldHeightLimit-v${project.version}-Spigot-Bukkit-1.20.5-1.20.6.jar" }
+}
+
+tasks.build {
+    dependsOn("copySpigotBukkitJar")
 }

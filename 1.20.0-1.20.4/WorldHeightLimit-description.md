@@ -2,11 +2,11 @@
 
 ## Short Summary
 
-Expand world height on Paper 1.20.5-1.21.11 while keeping the normal vanilla height limit for regular players.
+Expand world height on Bukkit, Spigot, Paper, Purpur, and Folia 1.20.0-1.20.4 while keeping the normal vanilla height limit for regular players.
 
 ## Full Description
 
-World Height Limit is a Paper plugin for 1.20.5-1.21.11 that increases world build height by generating a version-aware datapack in the world save folder.
+World Height Limit is a Bukkit/Spigot/Paper/Purpur/Folia plugin for 1.20.0-1.20.4 that increases world build height by generating a version-aware datapack in the world save folder.
 
 It is made for servers that want extra vertical build space without giving that access to everyone.
 
@@ -28,6 +28,14 @@ It is made for servers that want extra vertical build space without giving that 
 - chat, action bar, title, both, or no notifications
 - admin commands for reload and status
 
+## Supported Platforms
+
+- Paper
+- Purpur
+- Folia
+- Spigot
+- Bukkit
+
 ## Commands
 
 - `/worldheightlimit help`
@@ -48,4 +56,4 @@ It is made for servers that want extra vertical build space without giving that 
 
 ## One-Line Version
 
-Expand world height on Paper and reserve high-altitude building for admins or permitted players.
+Expand world height on Bukkit, Spigot, Paper, Purpur, and Folia while reserving high-altitude building for admins or permitted players.

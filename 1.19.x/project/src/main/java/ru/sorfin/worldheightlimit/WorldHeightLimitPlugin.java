@@ -1,8 +1,5 @@
 package ru.sorfin.worldheightlimit;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.title.Title;
 import org.bukkit.Material;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -20,11 +17,11 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,7 +41,6 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
     private static final String DEFAULT_STATUS_PERMISSION = "highbuildlimit.status";
     private static final String DEFAULT_FILL_PERMISSION = "highbuildlimit.fill";
 
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final Map<UUID, Long> lastDeniedNoticeAt = new ConcurrentHashMap<>();
 
     private PluginSettings settings;
@@ -116,7 +112,7 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!command.getName().equalsIgnoreCase("worldheightlimit")) {
+        if (!command.getName().equalsIgnoreCase("worldheightlimit") && !command.getName().equalsIgnoreCase("highbuildlimit")) {
             return false;
         }
 
@@ -131,6 +127,14 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
 
         if (args[0].equalsIgnoreCase("status")) {
             return handleStatus(sender);
+        }
+
+        if (args[0].equalsIgnoreCase("debug")) {
+            return handleDebug(sender);
+        }
+
+        if (args[0].equalsIgnoreCase("worlds")) {
+            return handleWorlds(sender);
         }
 
         if (args[0].equalsIgnoreCase("fill")) {
@@ -180,7 +184,9 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
         sendMessage(sender, "<gray>Server version:</gray> <white>" + resolveMinecraftVersion());
         sendMessage(sender, "<gray>Compatibility profile:</gray> <white>" + settings.compatibilityProfile().displayName());
         sendMessage(sender, "<gray>Target max Y:</gray> <white>" + settings.targetMaxY());
-        sendMessage(sender, "<gray>Effective world max Y:</gray> <white>" + settings.overworld().effectiveMaxY());
+        sendMessage(sender, "<gray>Effective Overworld technical max Y:</gray> <white>" + settings.overworld().effectiveMaxY() + " (height " + settings.overworld().height() + ")");
+        sendMessage(sender, "<gray>Effective Nether technical max Y:</gray> <white>" + settings.nether().effectiveMaxY() + " (height " + settings.nether().height() + ")");
+        sendMessage(sender, "<gray>Effective End technical max Y:</gray> <white>" + settings.end().effectiveMaxY() + " (height " + settings.end().height() + ")");
         sendMessage(sender, "<gray>Bypass permission:</gray> <white>" + settings.messages().bypassPermission());
         sendMessage(sender, "<gray>Reload permission:</gray> <white>" + settings.messages().reloadPermission());
         sendMessage(sender, "<gray>Status permission:</gray> <white>" + settings.messages().statusPermission());
@@ -196,6 +202,62 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
         return true;
     }
 
+    private boolean handleDebug(CommandSender sender) {
+        if (!sender.hasPermission(settings.messages().statusPermission())) {
+            sendMessage(sender, settings.messages().noPermissionMessage());
+            return true;
+        }
+
+        World world = resolveWorld(sender);
+        if (world == null) {
+            sendMessage(sender, "<red>No loaded worlds were found.");
+            return true;
+        }
+
+        DimensionSettings dimension = settings.dimensionForWorld(world);
+        RestrictionRule rule = settings.restrictions().forWorld(world);
+        boolean datapackActive = isDatapackActive(world);
+        String status = datapackActive ? "<green>OK" : "<yellow>Datapack not found";
+
+        sendMessage(sender, "<gold><bold>World Height Limit Info");
+        sendMessage(sender, "");
+        sendMessage(sender, "<gray>Server:</gray> <white>" + getServerDisplayName());
+        sendMessage(sender, "<gray>Plugin version:</gray> <white>" + getDescription().getVersion());
+        sendMessage(sender, "<gray>World:</gray> <white>" + world.getName());
+        sendMessage(sender, "");
+        sendMessage(sender, "<gray>Configured target max Y:</gray> <white>" + settings.targetMaxY());
+        sendMessage(sender, "<gray>Real generated max Y:</gray> <white>" + dimension.effectiveMaxY());
+        sendMessage(sender, "<gray>Min Y:</gray> <white>" + dimension.minY());
+        sendMessage(sender, "<gray>Total height:</gray> <white>" + dimension.height());
+        sendMessage(sender, "");
+        sendMessage(sender, "<gray>Vanilla player limit:</gray> <white>" + (rule.enabled() ? "enabled" : "disabled"));
+        sendMessage(sender, "<gray>Build above vanilla limit:</gray> <white>" + (rule.enabled() ? "blocked" : "allowed"));
+        sendMessage(sender, "<gray>Bypass permission:</gray> <white>" + settings.messages().bypassPermission());
+        sendMessage(sender, "");
+        sendMessage(sender, "<gray>Datapack:</gray> <white>" + (datapackActive ? "active" : "missing"));
+        sendMessage(sender, "<gray>Dimension:</gray> <white>" + getDimensionName(world));
+        sendMessage(sender, "<gray>Status:</gray> " + status);
+        return true;
+    }
+
+    private boolean handleWorlds(CommandSender sender) {
+        if (!sender.hasPermission(settings.messages().statusPermission())) {
+            sendMessage(sender, settings.messages().noPermissionMessage());
+            return true;
+        }
+
+        if (Bukkit.getWorlds().isEmpty()) {
+            sendMessage(sender, "<red>No loaded worlds were found.");
+            return true;
+        }
+
+        sendMessage(sender, "<gold><bold>Loaded worlds");
+        for (World world : Bukkit.getWorlds()) {
+            sendMessage(sender, "<gray>" + world.getName() + ":</gray> <white>" + getWorldMinY(world) + " to " + getWorldMaxYInclusive(world));
+        }
+        return true;
+    }
+
     private String describeRestriction(String name, RestrictionRule rule) {
         return "<gray>" + name + ":</gray> <white>enabled=" + rule.enabled()
             + ", maxY=" + rule.vanillaMaxY()
@@ -208,6 +270,8 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
         sendMessage(sender, "<gold><bold>WorldHeightLimit");
         sendMessage(sender, "<yellow>/" + label + " reload <gray>- reload config and rewrite datapack files if needed");
         sendMessage(sender, "<yellow>/" + label + " status <gray>- show current settings");
+        sendMessage(sender, "<yellow>/" + label + " debug <gray>- show detailed world height diagnostics");
+        sendMessage(sender, "<yellow>/" + label + " worlds <gray>- list loaded world height ranges");
         sendMessage(sender, "<yellow>/" + label + " fill <x1> <y1> <z1> <x2> <y2> <z2> <block> <gray>- fill an area using the plugin");
         sendMessage(sender, "<yellow>/" + label + " platform <radius> <block> [y] <gray>- create a square platform around you");
         sendMessage(sender, "<yellow>/" + label + " help <gray>- show this help");
@@ -403,23 +467,94 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
         String rawMessage = denyReason == DenyReason.BREAK
             ? settings.messages().deniedBreakMessage()
             : settings.messages().deniedBuildMessage();
-        Component component = miniMessage.deserialize(rawMessage);
+        String message = formatMessage(rawMessage);
 
         switch (settings.messages().notificationMode()) {
             case OFF -> {
             }
-            case CHAT -> player.sendMessage(component);
-            case ACTION_BAR -> player.sendActionBar(component);
-            case TITLE -> player.showTitle(Title.title(Component.empty(), component, Title.Times.times(Duration.ZERO, Duration.ofSeconds(2), Duration.ofMillis(500))));
+            case CHAT -> player.sendMessage(message);
+            case ACTION_BAR -> sendActionBar(player, message);
+            case TITLE -> player.sendTitle("", message, 0, 40, 10);
             case BOTH -> {
-                player.sendMessage(component);
-                player.sendActionBar(component);
+                player.sendMessage(message);
+                sendActionBar(player, message);
             }
         }
     }
 
     private void sendMessage(CommandSender sender, String miniMessageText) {
-        sender.sendMessage(miniMessage.deserialize(miniMessageText));
+        sender.sendMessage(formatMessage(miniMessageText));
+    }
+
+    private void sendActionBar(Player player, String message) {
+        try {
+            Object spigot = player.getClass().getMethod("spigot").invoke(player);
+            Class<?> chatMessageTypeClass = Class.forName("net.md_5.bungee.api.ChatMessageType");
+            Object actionBar = Enum.valueOf(chatMessageTypeClass.asSubclass(Enum.class), "ACTION_BAR");
+            Class<?> baseComponentClass = Class.forName("net.md_5.bungee.api.chat.BaseComponent");
+            Class<?> textComponentClass = Class.forName("net.md_5.bungee.api.chat.TextComponent");
+            Object component = textComponentClass.getConstructor(String.class).newInstance(message);
+            Object components = Array.newInstance(baseComponentClass, 1);
+            Array.set(components, 0, component);
+            Method sendMessage = spigot.getClass().getMethod("sendMessage", chatMessageTypeClass, components.getClass());
+            sendMessage.invoke(spigot, actionBar, components);
+        } catch (ReflectiveOperationException | LinkageError ex) {
+            player.sendMessage(message);
+        }
+    }
+
+    private String formatMessage(String message) {
+        if (message == null || message.isEmpty()) {
+            return "";
+        }
+
+        String formatted = message
+            .replace("<black>", "\u00a70")
+            .replace("<dark_blue>", "\u00a71")
+            .replace("<dark_green>", "\u00a72")
+            .replace("<dark_aqua>", "\u00a73")
+            .replace("<dark_red>", "\u00a74")
+            .replace("<dark_purple>", "\u00a75")
+            .replace("<gold>", "\u00a76")
+            .replace("<gray>", "\u00a77")
+            .replace("<dark_gray>", "\u00a78")
+            .replace("<blue>", "\u00a79")
+            .replace("<green>", "\u00a7a")
+            .replace("<aqua>", "\u00a7b")
+            .replace("<red>", "\u00a7c")
+            .replace("<light_purple>", "\u00a7d")
+            .replace("<yellow>", "\u00a7e")
+            .replace("<white>", "\u00a7f")
+            .replace("<bold>", "\u00a7l")
+            .replace("<italic>", "\u00a7o")
+            .replace("<underlined>", "\u00a7n")
+            .replace("<underline>", "\u00a7n")
+            .replace("<strikethrough>", "\u00a7m")
+            .replace("<obfuscated>", "\u00a7k")
+            .replace("<reset>", "\u00a7r")
+            .replace("</black>", "\u00a7r")
+            .replace("</dark_blue>", "\u00a7r")
+            .replace("</dark_green>", "\u00a7r")
+            .replace("</dark_aqua>", "\u00a7r")
+            .replace("</dark_red>", "\u00a7r")
+            .replace("</dark_purple>", "\u00a7r")
+            .replace("</gold>", "\u00a7r")
+            .replace("</gray>", "\u00a7r")
+            .replace("</dark_gray>", "\u00a7r")
+            .replace("</blue>", "\u00a7r")
+            .replace("</green>", "\u00a7r")
+            .replace("</aqua>", "\u00a7r")
+            .replace("</red>", "\u00a7r")
+            .replace("</light_purple>", "\u00a7r")
+            .replace("</yellow>", "\u00a7r")
+            .replace("</white>", "\u00a7r")
+            .replace("</bold>", "\u00a7r")
+            .replace("</italic>", "\u00a7r")
+            .replace("</underlined>", "\u00a7r")
+            .replace("</underline>", "\u00a7r")
+            .replace("</strikethrough>", "\u00a7r")
+            .replace("</obfuscated>", "\u00a7r");
+        return formatted.replaceAll("<[^>]+>", "");
     }
 
     private void installOptionalLogFilters() {
@@ -559,6 +694,39 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
             return player.getWorld();
         }
         return Bukkit.getWorlds().isEmpty() ? null : Bukkit.getWorlds().get(0);
+    }
+
+    private String getServerDisplayName() {
+        return Bukkit.getName() + " " + resolveMinecraftVersion();
+    }
+
+    private String getDimensionName(World world) {
+        return switch (world.getEnvironment()) {
+            case NORMAL -> "overworld";
+            case NETHER -> "the_nether";
+            case THE_END -> "the_end";
+            default -> world.getEnvironment().name().toLowerCase(Locale.ROOT);
+        };
+    }
+
+    private int getWorldMinY(World world) {
+        try {
+            Object value = world.getClass().getMethod("getMinHeight").invoke(world);
+            if (value instanceof Integer minY) {
+                return minY;
+            }
+        } catch (ReflectiveOperationException ignored) {
+        }
+        return 0;
+    }
+
+    private int getWorldMaxYInclusive(World world) {
+        return world.getMaxHeight() - 1;
+    }
+
+    private boolean isDatapackActive(World world) {
+        Path saveRoot = findSaveRoot(world.getWorldFolder().toPath());
+        return Files.isDirectory(saveRoot.resolve("datapacks").resolve(PACK_NAME));
     }
 
     private String resolveMinecraftVersion() {
@@ -721,6 +889,14 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
         LoggingSettings loggingSettings,
         CompatibilityProfile compatibilityProfile
     ) {
+        private DimensionSettings dimensionForWorld(World world) {
+            return switch (world.getEnvironment()) {
+                case NORMAL -> overworld;
+                case NETHER -> nether;
+                case THE_END -> end;
+                default -> overworld;
+            };
+        }
     }
 
     private record RestrictionSettings(

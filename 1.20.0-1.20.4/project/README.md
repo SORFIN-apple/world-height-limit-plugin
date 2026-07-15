@@ -7,7 +7,7 @@ Paper plugin for `1.20.0` through `1.20.4` that removes the default top build li
 - By default raises the top build height to `Y=2031`
 - Writes datapack files into `world/datapacks/high-build-limit-generated`
 - Lets only players with a bypass permission build above the normal vanilla limit
-- Includes `/highbuildlimit reload` and `/highbuildlimit status`
+- Includes `/worldheightlimit reload` and `/worldheightlimit status`
 - Detects the server version and writes the correct datapack format for that version
 - Requires a full server restart after the first launch or after datapack height changes
 

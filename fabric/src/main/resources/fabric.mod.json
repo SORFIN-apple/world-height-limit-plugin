@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "worldheightlimit",
+  "version": "${version}",
+  "name": "World Height Limit",
+  "description": "Increase Minecraft's vertical limits everywhere.",
+  "authors": [
+    "SORFIN"
+  ],
+  "contact": {
+    "homepage": "https://github.com/SORFIN-apple/world-height-limit-plugin",
+    "sources": "https://github.com/SORFIN-apple/world-height-limit-plugin"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ru.sorfin.worldheightlimit.fabric.WorldHeightLimitFabric"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": ">=1.21 <=1.21.11",
+    "fabric-api": "*",
+    "java": ">=21"
+  }
+}

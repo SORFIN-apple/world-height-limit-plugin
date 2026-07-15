@@ -2,12 +2,15 @@ name: WorldHeightLimit
 version: ${version}
 main: ru.sorfin.worldheightlimit.WorldHeightLimitPlugin
 api-version: '1.20'
-description: Raises the world height limit on Paper 1.20.5-1.21.11 with configurable admin-only access.
+folia-supported: true
+description: Raises the world height limit on Bukkit, Spigot, Paper, Purpur, and Folia 1.20.5-1.21.11 with configurable admin-only access.
 author: SORFIN
 commands:
   worldheightlimit:
     description: Admin command for World Height Limit.
-    usage: /<command> <reload|status|fill|platform|help>
+    usage: /<command> <reload|status|debug|worlds|fill|platform|help>
+    aliases:
+      - highbuildlimit
 permissions:
   highbuildlimit.bypass:
     description: Allows building above the normal vanilla height limit.

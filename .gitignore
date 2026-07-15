@@ -2,6 +2,7 @@
 .gradle-public-check/
 .idea/
 .vscode/
+.codebase-memory/
 
 # Local build outputs
 build/
