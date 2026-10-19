@@ -1,0 +1,25 @@
+name: WorldHeightLimit
+version: ${version}
+main: ru.sorfin.worldheightlimit.WorldHeightLimitPlugin
+api-version: '1.18'
+description: Raises the world height limit on Bukkit, Spigot, Paper, and Purpur 1.18.x with configurable admin-only access.
+author: SORFIN
+commands:
+  worldheightlimit:
+    description: Admin command for World Height Limit.
+    usage: /<command> <reload|status|debug|worlds|fill|platform|help>
+    aliases:
+      - highbuildlimit
+permissions:
+  highbuildlimit.bypass:
+    description: Allows building above the normal vanilla height limit.
+    default: op
+  highbuildlimit.reload:
+    description: Allows reloading WorldHeightLimit config.
+    default: op
+  highbuildlimit.status:
+    description: Allows viewing WorldHeightLimit status.
+    default: op
+  highbuildlimit.fill:
+    description: Allows using WorldHeightLimit fill and platform commands.
+    default: op

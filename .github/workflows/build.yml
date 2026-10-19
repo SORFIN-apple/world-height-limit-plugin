@@ -10,29 +10,53 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: modern
+            path: .
+            java: "21"
+          - name: 1.17.x
+            path: 1.17.x/project
+            java: "21"
+          - name: 1.18.x
+            path: 1.18.x/project
+            java: "21"
+          - name: 1.19.x
+            path: 1.19.x/project
+            java: "21"
+          - name: 1.20.0-1.20.4
+            path: 1.20.0-1.20.4/project
+            java: "21"
+          - name: 1.20.5-1.20.6
+            path: 1.20.x/project
+            java: "21"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java 21
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: ${{ matrix.java }}
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
+        working-directory: ${{ matrix.path }}
 
       - name: Build plugin
         run: ./gradlew build --no-daemon
+        working-directory: ${{ matrix.path }}
 
       - name: Upload jar artifact
         uses: actions/upload-artifact@v4
         with:
-          name: world-height-limit
-          path: build/libs/*.jar
+          name: world-height-limit-${{ matrix.name }}
+          path: ${{ matrix.path }}/build/libs/*.jar
           if-no-files-found: error

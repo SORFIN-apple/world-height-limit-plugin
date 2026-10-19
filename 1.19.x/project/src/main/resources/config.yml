@@ -6,6 +6,12 @@
 
 target-max-y: 2031
 
+# bStats ID shared by all World Height Limit server versions.
+# Set to 0 to disable reporting for this plugin. Server owners may also disable
+# all bStats reporting in plugins/bStats/config.yml.
+metrics:
+  bstats-plugin-id: ${bstatsPluginId}
+
 # These permission nodes can be changed if you want to integrate with a permission plugin.
 bypass-permission: highbuildlimit.bypass
 reload-permission: highbuildlimit.reload

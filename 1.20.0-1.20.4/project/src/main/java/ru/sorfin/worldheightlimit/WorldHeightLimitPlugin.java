@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import ru.sorfin.worldheightlimit.metrics.MetricsBootstrap;
 
 public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener {
 
@@ -69,6 +70,7 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
         installOptionalLogFilters();
         Bukkit.getPluginManager().registerEvents(this, this);
         applyDatapackChanges(settings, true);
+        MetricsBootstrap.start(this);
     }
 
     @EventHandler(ignoreCancelled = true)

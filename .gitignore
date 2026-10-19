@@ -3,6 +3,7 @@
 .idea/
 .vscode/
 .codebase-memory/
+node_modules/
 
 # Local build outputs
 build/

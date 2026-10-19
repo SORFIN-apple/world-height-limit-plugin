@@ -16,10 +16,15 @@ The Bukkit-family plugin targets Bukkit, Spigot, Paper, Purpur, and Folia. Fabri
 
 ## Supported versions
 
+- `1.17-1.17.1` (separate project in `1.17.x/project`)
+- `1.18-1.18.2` (separate project in `1.18.x/project`)
 - `1.19.x`
 - `1.20-1.20.4`
 - `1.20.5-1.20.6`
 - `1.21.x`
+- `26.1-26.3` (root plugin profiles; tested on 26.1.1, 26.1.2, 26.2 and 26.3)
+
+Minecraft 1.16.x is not supported by this datapack-based plugin. On a clean Paper 1.16.5 server, `/setblock` at Y=2000 returns `That position is out of this world!` even with the chunk loaded. Reaching Y=2000 in this branch requires a different engine and protocol approach; this project has no verified 1.16 solution.
 
 ## Supported platforms
 
@@ -40,10 +45,17 @@ Mod beta:
 
 Plugin:
 
-- `1.19.4`
-- `1.20.4`
-- `1.20.6`
-- `1.21.4`
+- `1.17`, `1.17.1` — real player placement at Y=2000, permission denial and persistence
+- `1.18`, `1.18.1`, `1.18.2` — same full check (Paper 1.18 build was marked ALPHA)
+- `1.19`, `1.19.1`, `1.19.2`, `1.19.3`, `1.19.4`
+- `1.20`, `1.20.1`, `1.20.2`, `1.20.4` — Paper has no 1.20.3 build
+- `1.20.5`, `1.20.6` — full player placement check on the root plugin (Paper 1.20.5 build was marked experimental)
+- `1.21`, `1.21.1`, `1.21.3` through `1.21.11` — full player placement check across every available Paper release in this range; Paper has no 1.21.2 build (the tested 1.21.5 build was experimental and 1.21.9 was ALPHA)
+- `26.1.1`, `26.1.2`, `26.2` and `26.3` — full player placement check; on 26.3 the test client sends `client_tick_end` after movement as required by that server version
+
+The automated test runner is in [`tools/height-smoke`](tools/height-smoke/README.md). Paper 26.3 build 206 passed player placement at Y=2000, permission denial and persistence after restart.
+
+Server JARs are divided by Minecraft version. The `1.20.5-1.20.6` branch has its own project and build; the root project covers `1.21-26.3`. Use the JAR in the folder matching your server version. The packaged server JARs are in version subfolders under `release-server-1.2.0/` after running `tools/package-server-jars.ps1`.
 
 Fabric beta:
 
@@ -69,6 +81,18 @@ NeoForge beta:
 
 The old `/highbuildlimit` command remains as an alias for compatibility.
 
+## bStats server statistics
+
+All six server-plugin branches include bStats for anonymous server counts, Minecraft versions, and the other standard Bukkit charts. No custom player or world data is submitted. Server owners can turn off bStats in `plugins/bStats/config.yml`.
+
+All branches use the same registered bStats plugin ID, `34825`, owned by `sorfin`. Their reports contribute to the [World Height Limit bStats page](https://bstats.org/plugin/bukkit/World%20Height%20Limit/34825). To rebuild and package all branches, run:
+
+```powershell
+.\tools\package-server-jars.ps1
+```
+
+The script embeds that ID in every version-specific JAR and recreates `release-server-1.2.0/`. Once installed on servers, bStats generally displays the first measurements 3–36 minutes after startup. The page can be linked from the Modrinth project description or links section.
+
 ## Configurable behavior
 
 - Different restriction toggles for Overworld, Nether, and End
@@ -84,7 +108,7 @@ The old `/highbuildlimit` command remains as an alias for compatibility.
 
 - `src/` -> current plugin source code
 - `data/` -> bundled datapack templates used by the plugin
-- `1.19.x/`, `1.20.x/`, `1.20.0-1.20.4/`, `1.21.x/` -> version notes, release notes, and archived branch-specific materials
+- `1.17.x/`, `1.18.x/`, `1.19.x/`, `1.20.x/`, `1.20.0-1.20.4/`, `1.21.x/` -> version-specific plugin projects and notes
 - `fabric/`, `fabric-1.19.x/`, `fabric-1.20.0-1.20.4/`, `fabric-1.20.5-1.20.6/` -> Fabric beta source sets
 - `neoforge/`, `neoforge-1.20.2-1.20.4/`, `neoforge-1.20.5-1.20.6/` -> NeoForge beta source sets
 - `outputs/` -> release descriptions and changelog drafts
@@ -101,7 +125,7 @@ Plugin build command:
 ./gradlew build
 ```
 
-The finished jar will be created in `build/libs/`.
+The root project's JAR for `1.21-26.3` will be created in `build/libs/`. Run `tools/package-server-jars.ps1` to build all six server version branches and collect their JARs in six version folders.
 
 Fabric and NeoForge ports are separate Gradle projects. Build them from their own folders, for example:
 
@@ -120,4 +144,4 @@ cd fabric
 ## Publishing notes
 
 - This repository is prepared for GitHub with a CI build workflow and a `.gitignore` that excludes local jars and build artifacts.
-- Before publishing as true open source, add a license file such as `MIT` or `GPL-3.0`.
+- The project is licensed under Apache-2.0; see `LICENSE`.

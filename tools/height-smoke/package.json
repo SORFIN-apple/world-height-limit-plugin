@@ -1,0 +1,12 @@
+{
+  "name": "world-height-limit-smoke",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Real-server player placement smoke test for World Height Limit",
+  "scripts": {
+    "test:height": "node smoke.js"
+  },
+  "dependencies": {
+    "mineflayer": "4.39.0"
+  }
+}
