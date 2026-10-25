@@ -13,7 +13,7 @@ cd tools/height-smoke
 npm ci
 cd ../..
 $env:MC_VERSION = '1.18.2'
-$env:PLUGIN_JAR = (Resolve-Path '1.18.x/project/build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-1.18.x.jar').Path
+$env:PLUGIN_JAR = (Resolve-Path '1.18.x/project/build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-1.18.x.jar').Path
 $env:JAVA_BIN = 'C:\path\to\java17\bin\java.exe'
 node tools/height-smoke/smoke.js
 ```
@@ -29,11 +29,14 @@ The matrix runner uses the 1.19.2 client protocol for server 1.19.1 and the 1.21
 Optional environment variables:
 
 - `SMOKE_ROOT`: ASCII-only directory for older Paper builds that cannot launch from a path containing non-ASCII characters.
+- `SERVER_JAR`: use a local compatible server JAR instead of downloading Paper, for example to test Purpur.
 - `OBSERVER_JAR`: test-only plugin that logs high-altitude `BlockPlaceEvent` delivery and cancellation. Its source is `BlockObserver.java`; it is not part of the release plugin.
 - `VANILLA_SERVER_JAR`: a separately downloaded Mojang server JAR to seed old Paper's cache when its downloader fails. Verify its hash against Mojang's version manifest first.
 - `ENGINE_PROBE_ONLY=1`: run a vanilla `/setblock` height probe without loading the plugin or a bot. The JSON result is `PROBE`, never a plugin compatibility pass.
 
 The test world is disposable. Do not point `SMOKE_ROOT` at an existing Minecraft save.
+
+Set `SLEEP_PROBE=1` to place a bed, set night, sleep with a real client and verify that the Overworld clock advances to morning. This checks the `default_clock` field required by Minecraft 26.1 and newer. The 26.2 checks passed on Paper and Purpur; the Purpur run used `SERVER_JAR` and the packaged 1.2.1 JAR.
 
 ## Version matrix
 

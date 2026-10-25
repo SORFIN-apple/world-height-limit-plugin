@@ -23,31 +23,31 @@ $runtimes = @{
 
 function Get-TestProfile([string] $Version) {
     if ($Version -match '^1\.17(?:\.|$)') {
-        return @{ Jar = '1.17.x/project/build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-1.17.x.jar'; Java = '16'; Bot = $Version }
+        return @{ Jar = '1.17.x/project/build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-1.17.x.jar'; Java = '16'; Bot = $Version }
     }
     if ($Version -match '^1\.18(?:\.|$)') {
-        return @{ Jar = '1.18.x/project/build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-1.18.x.jar'; Java = '17'; Bot = $Version }
+        return @{ Jar = '1.18.x/project/build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-1.18.x.jar'; Java = '17'; Bot = $Version }
     }
     if ($Version -match '^1\.19(?:\.|$)') {
         # minecraft-data maps 1.19.1 to protocol 759, but its server requires
         # protocol 760, shared with 1.19.2.
         $bot = if ($Version -eq '1.19.1') { '1.19.2' } else { $Version }
-        return @{ Jar = '1.19.x/project/build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-Folia-1.19.x.jar'; Java = '17'; Bot = $bot }
+        return @{ Jar = '1.19.x/project/build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-Folia-1.19.x.jar'; Java = '17'; Bot = $bot }
     }
     if ($Version -match '^1\.20\.[0-4]$' -or $Version -eq '1.20') {
-        return @{ Jar = '1.20.0-1.20.4/project/build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-Folia-1.20.0-1.20.4.jar'; Java = '17'; Bot = $Version }
+        return @{ Jar = '1.20.0-1.20.4/project/build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-Folia-1.20.0-1.20.4.jar'; Java = '17'; Bot = $Version }
     }
     if ($Version -match '^1\.20\.[56]$') {
-        return @{ Jar = '1.20.x/project/build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-Folia-1.20.5-1.20.6.jar'; Java = '21'; Bot = $Version }
+        return @{ Jar = '1.20.x/project/build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-Folia-1.20.5-1.20.6.jar'; Java = '21'; Bot = $Version }
     }
     if ($Version -match '^1\.21(?:\.|$)') {
         # minecraft-data's 1.21.7 alias resolves to the older 1.21 protocol;
         # 1.21.8 carries the matching 1.21.7 protocol number.
         $bot = if ($Version -eq '1.21.7') { '1.21.8' } else { $Version }
-        return @{ Jar = 'build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-Folia-1.21-26.3.jar'; Java = '21'; Bot = $bot }
+        return @{ Jar = 'build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-Folia-1.21-26.3.jar'; Java = '21'; Bot = $bot }
     }
     if ($Version -match '^26\.[123](?:\.|$)') {
-        return @{ Jar = 'build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-Folia-1.21-26.3.jar'; Java = '25'; Bot = '26.1' }
+        return @{ Jar = 'build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-Folia-1.21-26.3.jar'; Java = '25'; Bot = '26.1' }
     }
     throw "No server-plugin test profile for Minecraft $Version"
 }

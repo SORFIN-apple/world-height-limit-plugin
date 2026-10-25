@@ -8,7 +8,7 @@ if ($SkipBuild -and $PSBoundParameters.ContainsKey('BStatsPluginId')) {
     throw 'Pass -BStatsPluginId without -SkipBuild so the ID is embedded in every JAR.'
 }
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$pluginVersion = '1.2.0'
+$pluginVersion = '1.2.1'
 $release = Join-Path $repo "release-server-$pluginVersion"
 $branches = @(
     @{ Project = '1.17.x/project'; Family = '1.17.x'; Platforms = 'Paper-Purpur' },

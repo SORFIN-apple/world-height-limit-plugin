@@ -19,7 +19,8 @@ const repo = path.resolve(__dirname, '../..')
 const mcVersion = process.env.MC_VERSION || '1.21.11'
 const botVersion = process.env.BOT_VERSION || mcVersion
 const java = process.env.JAVA_BIN || 'java'
-const pluginJar = path.resolve(process.env.PLUGIN_JAR || path.join(repo, 'build/libs/WorldHeightLimit-v1.2.0-Paper-Purpur-Folia-1.21-26.3.jar'))
+const pluginJar = path.resolve(process.env.PLUGIN_JAR || path.join(repo, 'build/libs/WorldHeightLimit-v1.2.1-Paper-Purpur-Folia-1.21-26.3.jar'))
+const customServerJar = process.env.SERVER_JAR ? path.resolve(process.env.SERVER_JAR) : null
 const observerJar = process.env.OBSERVER_JAR ? path.resolve(process.env.OBSERVER_JAR) : null
 const vanillaServerJar = process.env.VANILLA_SERVER_JAR ? path.resolve(process.env.VANILLA_SERVER_JAR) : null
 const engineProbeOnly = process.env.ENGINE_PROBE_ONLY === '1'
@@ -215,6 +216,45 @@ async function placeAsPlayer(server, port, username, x, bypass) {
   } finally { bot.quit() }
 }
 
+async function checkSleepSkipsNight(server, port) {
+  const bot = await connectBot('SleepProbe', port)
+  const diagnostic = { events: [], messages: [] }
+  report.checks.sleepDiagnostic = diagnostic
+  bot.on('sleep', () => diagnostic.events.push('sleep'))
+  bot.on('wake', () => diagnostic.events.push('wake'))
+  bot.on('messagestr', message => diagnostic.messages.push(message))
+  try {
+    server.send('op SleepProbe')
+    server.send('gamemode creative SleepProbe')
+    server.send('difficulty peaceful')
+    server.send('gamerule minecraft:players_sleeping_percentage 1')
+    server.send('weather clear')
+    server.send('time set night')
+    server.send('setblock 10 79 10 minecraft:stone')
+    server.send('setblock 10 79 11 minecraft:stone')
+    server.send('setblock 10 79 8 minecraft:stone')
+    server.send('setblock 10 80 10 minecraft:white_bed[facing=south,part=foot]')
+    server.send('setblock 10 80 11 minecraft:white_bed[facing=south,part=head]')
+    server.send('tp SleepProbe 10 80 8')
+    await waitFor(() => bot.time.timeOfDay >= 12541, 'night time received by sleep probe', 15_000)
+    await waitFor(() => Math.abs(bot.entity.position.x - 10.5) < 1 && Math.abs(bot.entity.position.z - 8.5) < 1, 'sleep probe teleported beside bed', 15_000)
+    const bed = await waitFor(() => {
+      const block = bot.blockAt(new Vec3(10, 80, 10))
+      return block?.name === 'white_bed' ? block : null
+    }, 'bed visible to sleep probe', 15_000)
+    await delay(500)
+    diagnostic.position = bot.entity.position.toString()
+    diagnostic.nightTime = bot.time.timeOfDay
+    bot.activateBlock(bed)
+    await waitFor(() => bot.time.timeOfDay < 1000, 'sleep skipped the night', 20_000)
+    return { result: 'PASS', morningTime: bot.time.timeOfDay }
+  } finally {
+    diagnostic.finalTime = bot.time.timeOfDay
+    diagnostic.isSleeping = bot.isSleeping
+    bot.quit()
+  }
+}
+
 async function main() {
   await fsp.mkdir(lab, { recursive: true })
   await fsp.mkdir(versionRoot, { recursive: true })
@@ -235,7 +275,13 @@ async function main() {
     if (observerJar) await fsp.copyFile(observerJar, path.join(lab, 'plugins', 'HeightSmokeObserver.jar'))
     await downloadBridge()
   }
-  await downloadPaper()
+  if (customServerJar) {
+    assert(fs.existsSync(customServerJar), `Server JAR missing: ${customServerJar}`)
+    await fsp.copyFile(customServerJar, serverJar)
+    report.server = { source: customServerJar, sha256: crypto.createHash('sha256').update(await fsp.readFile(customServerJar)).digest('hex') }
+  } else {
+    await downloadPaper()
+  }
   if (vanillaServerJar) {
     assert(fs.existsSync(vanillaServerJar), `Vanilla server JAR missing: ${vanillaServerJar}`)
     await fsp.mkdir(path.join(lab, 'cache'), { recursive: true })
@@ -272,6 +318,9 @@ async function main() {
     report.checks.serverRestart = 'PASS'
     report.checks.allowedPlacement = await placeAsPlayer(second, port, 'HeightProbe', 0, true)
     report.checks.deniedPlacement = await placeAsPlayer(second, port, 'HeightNoPerm', 3, false)
+    if (process.env.SLEEP_PROBE === '1') {
+      report.checks.sleepSkipsNight = await checkSleepSkipsNight(second, port)
+    }
   } finally { await second.stop() }
 
   const third = await startServer('persistence', port)

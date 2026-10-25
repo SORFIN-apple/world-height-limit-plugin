@@ -55,7 +55,7 @@ Plugin:
 
 The automated test runner is in [`tools/height-smoke`](tools/height-smoke/README.md). Paper 26.3 build 206 passed player placement at Y=2000, permission denial and persistence after restart.
 
-Server JARs are divided by Minecraft version. The `1.20.5-1.20.6` branch has its own project and build; the root project covers `1.21-26.3`. Use the JAR in the folder matching your server version. The packaged server JARs are in version subfolders under `release-server-1.2.0/` after running `tools/package-server-jars.ps1`.
+Server JARs are divided by Minecraft version. The `1.20.5-1.20.6` branch has its own project and build; the root project covers `1.21-26.3`. Use the JAR in the folder matching your server version. The packaged server JARs are in version subfolders under `release-server-1.2.1/` after running `tools/package-server-jars.ps1`.
 
 Fabric beta:
 
@@ -91,7 +91,7 @@ All branches use the same registered bStats plugin ID, `34825`, owned by `sorfin
 .\tools\package-server-jars.ps1
 ```
 
-The script embeds that ID in every version-specific JAR and recreates `release-server-1.2.0/`. Once installed on servers, bStats generally displays the first measurements 3–36 minutes after startup. The page can be linked from the Modrinth project description or links section.
+The script embeds that ID in every version-specific JAR and recreates `release-server-1.2.1/`. Once installed on servers, bStats generally displays the first measurements 3–36 minutes after startup. The page can be linked from the Modrinth project description or links section.
 
 ## Configurable behavior
 

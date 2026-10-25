@@ -1077,12 +1077,17 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
             return this == V26_1 || this == V26_2 || this == V26_3;
         }
 
+        private boolean usesWorldClocks() {
+            return this == V26_1 || this == V26_2 || this == V26_3;
+        }
+
         private String buildOverworldJson(DimensionSettings settings) {
             String cloudHeight = settings.cloudHeight() == null
                 ? "192.33"
                 : String.format(Locale.US, "%.2f", settings.cloudHeight());
             if (usesModernDimensionSchema) {
                 String dragonFight = requiresDragonFightField() ? "\"has_ender_dragon_fight\": false," : "";
+                String defaultClock = usesWorldClocks() ? "\"default_clock\": \"minecraft:overworld\"," : "";
                 return """
                     {
                       "ambient_light": 0.0,
@@ -1121,6 +1126,7 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
                         "minecraft:visual/fog_color": "#c0d8ff",
                         "minecraft:visual/sky_color": "#78a7ff"
                       },
+                      %s
                       "coordinate_scale": 1.0,
                       "has_ceiling": false,
                       %s
@@ -1137,7 +1143,7 @@ public final class WorldHeightLimitPlugin extends JavaPlugin implements Listener
                       },
                       "timelines": "#minecraft:in_overworld"
                     }
-                    """.formatted(cloudHeight, dragonFight, settings.height(), settings.logicalHeight(), settings.minY());
+                    """.formatted(cloudHeight, defaultClock, dragonFight, settings.height(), settings.logicalHeight(), settings.minY());
             }
             String optionalCloudHeight = this == V1_21_9_TO_1_21_10 ? """
                   "cloud_height": 192,
